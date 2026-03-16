@@ -17,7 +17,7 @@ concurrency:
 
 jobs:
   deploy:
-    name: Deploy all branches to Github Pages
+    name: Deploy all branches
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
