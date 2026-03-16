@@ -27,6 +27,7 @@ jobs:
       
       - name: Clone all branches
         run: |
+          git checkout origin/main
           mkdir -p src/branch
           for branch in $(git branch -r | grep -v '\->'); do
             if [[ "$branch" == "origin/"* ]] && [[ "${branch#origin/}" != "${{ github.head_ref || github.ref_name }}" ]]; then
