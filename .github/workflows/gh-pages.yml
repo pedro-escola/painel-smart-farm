@@ -1,7 +1,7 @@
 # baseado (copiado) do https://github.com/coderefinery/gh-pages-multibranch/blob/main/.github/workflows/test.yml
 # e tambem no workflow padrão do gh pages
 
-name: Deploy Github Pages
+name: Deploy to Github Pages
 on:
   push:
     paths: "src/**"
@@ -18,25 +18,31 @@ concurrency:
 
 jobs:
   multipages:
-    name: Test multipages
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0
-          lfs: true
       
-      - name: multipages
-        uses: rkdarst/gh-pages-multibranch@dev
-        if: ${{ github.event_name == 'push' }}
-        with:
-          directory: src
+      - name: Clone all branches
+        run: |
+          cd src/
+          mkdir -p branch
+          cd branch/
+          for branch in $(git branch -r | grep -v '\->'); do
+            git clone -b "$branch" --single-branch https://github.com/pedro-escola/painel-smart-farm.git "$branch"
+          done
+          cd "$GITHUB_WORKSPACE"
       
-      - name: Deploy
-        uses: peaceiris/actions-gh-pages@v3
-        if: ${{ github.event_name == 'push' }}
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+      
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
         with:
-          publish_branch: gh-pages
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: src/
-          force_orphan: true
+          # Upload entire repository
+          path: './src'
+      
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
