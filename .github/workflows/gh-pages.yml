@@ -26,13 +26,12 @@ jobs:
       
       - name: Clone all branches
         run: |
-          cd src/
-          mkdir -p branch
-          cd branch/
+          mkdir -p src/branch
           for branch in $(git branch -r | grep -v '\->'); do
+            echo "Found branch ${branch}!"
             if [[ "$branch" == "origin/"* ]]; then
               true_branch="${branch#origin/}"
-              git clone -b "$true_branch" --single-branch https://github.com/pedro-escola/painel-smart-farm.git "$true_branch"
+              git clone -b "$true_branch" --single-branch https://github.com/pedro-escola/painel-smart-farm.git "src/branch/$true_branch"
             fi
           done
           cd "$GITHUB_WORKSPACE"
