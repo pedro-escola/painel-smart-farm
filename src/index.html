@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Painel Smart Farm</title>
+
+	<link rel="stylesheet" href="assets/style.css">
+	<script src="assets/main.js"></script>
+</head>
+<body>
+
+	<div class="painel">
+		<h1>🌱 Painel da Estufa Inteligente</h1>
+		
+		<p>Temperatura Atual: <strong>32°C</strong></p>
+		<p>Umidade do Solo: <strong id="valor-umidade">--%</strong> (Crítico)</p>
+		
+		<!-- Este texto vai ser alterado magicamente pelo JavaScript -->
+		<p>Status da Bomba: <span id="status-bomba">DESLIGADA</span></p>
+
+		<div class="botoes-container">
+			<!-- Botões chamando as funções JS -->
+			<button class="btn-sensor" onclick="atualizaSensores()">📡 Ler Sensores da Terra</button>
+			<button class="btn-ligar" onclick="ligarBomba()">Ligar Manual</button>
+			<button class="btn-desligar" onclick="desligarBomba()">Desligar Manual</button>
+		</div>
+	</div>
+</body>
+
+</html>
