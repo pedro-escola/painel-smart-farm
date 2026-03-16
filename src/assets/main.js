@@ -1,7 +1,7 @@
 // Função para LIGAR a bomba
 function ligarBomba() {
     // 1. Aviso em Pop-up na tela
-    alert("Atenção: Enviando comando para a bomba d'água...");
+    // alert("Atenção: Enviando comando para a bomba d'água...");
 
     // 2. JS procura no HTML o elemento com o ID 'status-bomba'
     let textoStatus = document.getElementById("status-bomba");
