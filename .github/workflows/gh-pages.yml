@@ -27,10 +27,9 @@ jobs:
       
       - name: Clone all branches
         run: |
-          git checkout origin/main
           mkdir -p src/branch
           for branch in $(git branch -r | grep -v '\->'); do
-            if [[ "$branch" == "origin/"* ]] && [[ "${branch#origin/}" != "${{ github.head_ref || github.ref_name }}" ]]; then
+            if [[ "$branch" == "origin/"* ]] && [[ "${branch#origin/}" != "main" ]]; then
               echo "Cloning branch ${branch}!"
               true_branch="${branch#origin/}"
               git clone -b "$true_branch" --single-branch https://github.com/pedro-escola/painel-smart-farm.git "temp"
