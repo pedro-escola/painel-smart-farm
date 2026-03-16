@@ -30,7 +30,10 @@ jobs:
           mkdir -p branch
           cd branch/
           for branch in $(git branch -r | grep -v '\->'); do
-            git clone -b "$branch" --single-branch https://github.com/pedro-escola/painel-smart-farm.git "$branch"
+            if [[ "$branch" == "origin/"* ]]; then
+              true_branch="${branch#origin/}"
+              git clone -b "$true_branch" --single-branch https://github.com/pedro-escola/painel-smart-farm.git "$true_branch"
+            fi
           done
           cd "$GITHUB_WORKSPACE"
       
