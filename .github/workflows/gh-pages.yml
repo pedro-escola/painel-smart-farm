@@ -29,15 +29,15 @@ jobs:
         run: |
           mkdir -p src/branch
           for branch in $(git branch -r | grep -v '\->'); do
-            echo "Found branch ${branch}!"
             if [[ "$branch" == "origin/"* ]] && [[ "${branch#origin/}" != "${{ github.head_ref || github.ref_name }}" ]]; then
+              echo "Cloning branch ${branch}!"
               true_branch="${branch#origin/}"
-              git clone -b "$true_branch" --single-branch https://github.com/pedro-escola/painel-smart-farm.git "temp_repo"
-              mv temp_repo/src src/branch/$true_branch
-              rm -rf temp_repo/
+              git clone -b "$true_branch" --single-branch https://github.com/pedro-escola/painel-smart-farm.git "temp"
+              mv temp/src src/branch/$true_branch
+              rm -rf temp/
+              echo "Cloned branch ${branch}!"
             fi
           done
-          cd "$GITHUB_WORKSPACE"
       
       - name: Setup Pages
         uses: actions/configure-pages@v5
