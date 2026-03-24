@@ -3,55 +3,13 @@ body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
     text-align: center; 
     padding: 50px; 
-    background-color: #e2e8f0; 
+    background-color: #e2e8f0;
 }
 
-.painel { 
-    background: white; 
-    padding: 40px; 
-    border-radius: 12px; 
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1); 
-    display: inline-block; 
-    min-width: 350px;
+body::before {
+    
 }
 
-h1 { color: #0f172a; font-size: 24px; margin-bottom: 20px;}
-p { font-size: 18px; color: #334155; margin: 10px 0;}
+.seletor {
 
-.botoes-container {
-    margin-top: 30px;
-    display: flex;
-    gap: 15px;
-    flex-wrap: wrap;
-    justify-content: center;
-}
-
-button { 
-    padding: 12px 20px; 
-    font-size: 16px; 
-    font-weight: bold;
-    cursor: pointer; 
-    color: white; 
-    border: none; 
-    border-radius: 6px; 
-    transition: 0.3s;
-    flex-grow: 1;
-}
-
-.btn-ligar { background-color: #10b981; }
-.btn-ligar:hover { background-color: #059669; }
-
-.btn-desligar { background-color: #ef4444; }
-.btn-desligar:hover { background-color: #dc2626; }
-
-.btn-sensor {
-    flex: 1 0 100%;
-    background-color: #439cd8;
-}
-.btn-sensor:hover { background-color: #327aaa; }
-
-/* O ID que o JavaScript vai procurar para alterar */
-#status-bomba { 
-    font-weight: bold; 
-    color: #ef4444; /* Começa vermelho (Desligada) */
 }
