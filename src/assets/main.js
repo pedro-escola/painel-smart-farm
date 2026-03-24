@@ -1,40 +1,35 @@
-// Função para LIGAR a bomba
-function ligarBomba() {
-    // 1. Aviso em Pop-up na tela
-    // alert("Atenção: Enviando comando para a bomba d'água...");
+/* JAVASCRIPT - A Lógica do Sistema */
+        
+// Simulação do nosso objeto do Banco de Dados
+const sistema = {
+    id_sensor: 1,
+    valor: 0,
+    bombaAtiva: false
+};
 
-    // 2. JS procura no HTML o elemento com o ID 'status-bomba'
-    let textoStatus = document.getElementById("status-bomba");
+function simularLeitura() {
+    // 1. Simula a leitura do sensor (0 a 50 graus)
+    sistema.valor = (Math.random() * 50).toFixed(1);
+    
+    // 2. Atualiza a tela (DOM)
+    document.getElementById('display-valor').innerText = sistema.valor + "°C";
+    
+    // 3. Lógica de Automação (Igual ao Trigger do MySQL!)
+    const logElemento = document.getElementById('log');
+    const led = document.getElementById('led-bomba');
+    const textoBomba = document.getElementById('texto-bomba');
 
-    // 3. Muda o texto e a cor para Azul
-    textoStatus.innerText = "LIGADA (Irrigando...)";
-    textoStatus.style.color = "#3b82f6"; // Azul
-
-    // 4. Aviso escondido no console para os desenvolvedores
-    console.log("Comando ON: A bomba de água foi ativada.");
-}
-
-// Função para DESLIGAR a bomba (O Desafio dos alunos)
-function desligarBomba() {
-    // 1. Procura o mesmo elemento HTML
-    let textoStatus = document.getElementById("status-bomba");
-
-    // 2. Devolve o texto e a cor original (Vermelho)
-    textoStatus.innerText = "DESLIGADA";
-    textoStatus.style.color = "#ef4444"; // Vermelho
-
-    // 3. Aviso no console
-    console.log("Comando OFF: A bomba de água foi desligada.");
-}
-
-function atualizaSensores() {
-    let umidadeLida = Math.floor(Math.random() * 70) + 10;
-
-    document.getElementById("valor-umidade").innerText = umidadeLida + "%";
-
-    if (umidadeLida < 30) {
-        ligarBomba();
+    if (sistema.valor > 35.0) {
+        sistema.bombaAtiva = true;
+        led.classList.add('bomba-on');
+        textoBomba.innerText = "LIGADA";
+        textoBomba.style.color = "#3b82f6";
+        logElemento.innerHTML = "<span style='color: #ef4444;'>⚠️ Alerta: Valor Crítico! Bomba ligada.</span>";
     } else {
-        desligarBomba();
+        sistema.bombaAtiva = false;
+        led.classList.remove('bomba-on');
+        textoBomba.innerText = "OFF";
+        textoBomba.style.color = "#94a3b8";
+        logElemento.innerText = "✅ Temperatura estável.";
     }
 }

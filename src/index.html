@@ -12,21 +12,25 @@
 <body>
 
 	<div class="painel">
-		<h1>🌱 Painel da Estufa Inteligente</h1>
-		
-		<p>Temperatura Atual: <strong>32°C</strong></p>
-		<p>Umidade do Solo: <strong id="valor-umidade">--%</strong> (Crítico)</p>
-		
-		<!-- Este texto vai ser alterado magicamente pelo JavaScript -->
-		<p>Status da Bomba: <span id="status-bomba">DESLIGADA</span></p>
+        <h2 style="color: #10b981; margin-bottom: 5px;">Smart Farm</h2>
+        <p style="font-size: 0.8rem; color: #94a3b8; margin-bottom: 20px;">Dashboard de Monitoramento</p>
 
-		<div class="botoes-container">
-			<!-- Botões chamando as funções JS -->
-			<button class="btn-sensor" onclick="atualizaSensores()">📡 Ler Sensores da Terra</button>
-			<button class="btn-ligar" onclick="ligarBomba()">Ligar Manual</button>
-			<button class="btn-desligar" onclick="desligarBomba()">Desligar Manual</button>
-		</div>
-	</div>
+        <div class="status-grid">
+            <div class="card">
+                <small>Temperatura</small>
+                <div id="display-valor" class="valor">--°C</div>
+            </div>
+            <div class="card">
+                <small>Bomba</small>
+                <div id="led-bomba" class="bomba-led"></div>
+                <small id="texto-bomba">OFF</small>
+            </div>
+        </div>
+
+        <button class="btn-leitura" onclick="simularLeitura()">Realizar Leitura (Sensor 1)</button>
+        
+        <div id="log">Aguardando comando...</div>
+    </div>
 </body>
 
 </html>
