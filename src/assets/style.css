@@ -3,3 +3,4 @@
 body { font-family: 'Inter', sans-serif; }
 .stat-card { transition: transform 0.2s; }
 .stat-card:hover { transform: translateY(-5px); }
+.logsPanel { max-height: 32rem; overflow: scroll; }

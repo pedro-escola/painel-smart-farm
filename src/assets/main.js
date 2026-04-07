@@ -8,6 +8,7 @@ const displayTemp = document.getElementById('txtTemp');
 const displayHum = document.getElementById('txtHum');
 const statusBomba = document.getElementById('statusBomba');
 const logs = document.getElementById('logs');
+const logs_scroller = document.getElementById("logs_scroller");
 const lastUpdate = document.getElementById('lastUpdate');
 
 // Configuração do Gráfico
@@ -83,7 +84,9 @@ function simulateESP32() {
     const logEntry = document.createElement('div');
     const alertClass = novaTemp > 35 ? 'text-red-400' : 'text-green-400';
     logEntry.innerHTML = `<span class="text-gray-500">[${agora}]</span> <span class="${alertClass}">Temp: ${novaTemp}°C | Hum: ${novaHum}%</span>`;
-    logs.prepend(logEntry);
+    logs.append(logEntry);
+
+    logs_scroller.scrollTop = logs_scroller.scrollHeight;
 }
 
 btn.addEventListener('click', () => {
