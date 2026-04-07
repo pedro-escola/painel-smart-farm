@@ -1,19 +1,99 @@
 <!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Farm 2.0 - Dashboard Standalone</title>
+    <!-- Tailwind CSS para o design profissional -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js para os gráficos científicos -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="assets/style.css">
+</head>
+<body class="bg-gray-100 min-h-screen text-gray-800">
 
-<html lang="pt-BR">
-	<head>
-		<meta charset="UTF-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<title>Selecione uma branch!</title>
+    <!-- Barra de Navegação -->
+    <nav class="bg-green-800 text-white shadow-xl p-4">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <span class="text-2xl">🌿</span>
+                <div>
+                    <h1 class="font-bold text-xl leading-none">Smart Farm 2.0</h1>
+                    <span class="text-xs text-green-200">CEEP Ibaiti | Monitoramento Local</span>
+                </div>
+            </div>
+            <div id="connectionStatus" class="flex items-center gap-2 bg-green-900 px-4 py-2 rounded-full text-xs">
+                <div class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                SISTEMA OPERACIONAL
+            </div>
+        </div>
+    </nav>
 
-		<link rel="stylesheet" href="assets/style.css">
-		<script src="assets/main.js"></script>
-	</head>
+    <main class="max-w-7xl mx-auto p-6">
+        
+        <!-- Grid de Cards de Status -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            
+            <!-- Card de Controle -->
+            <div class="bg-white p-6 rounded-2xl shadow-md flex flex-col justify-center items-center stat-card border-b-4 border-green-600">
+                <p class="text-gray-400 text-xs font-bold uppercase mb-4">Simulação de Hardware</p>
+                <button id="btnToggle" class="w-full py-4 bg-green-600 hover:bg-green-700 text-white font-bold rounded-xl shadow-lg transition-all active:scale-95">
+                    INICIAR SENSORES
+                </button>
+            </div>
 
-	<body>
-		<div class="seletor">
-			<p>abobrinha!</p>
-			<!-- insira todos as branches aqui -->
-		</div>
-	</body>
+            <!-- Temperatura -->
+            <div class="bg-white p-6 rounded-2xl shadow-md stat-card border-b-4 border-orange-500">
+                <p class="text-gray-400 text-xs font-bold uppercase mb-2">Temperatura</p>
+                <div class="flex items-baseline gap-1">
+                    <span id="txtTemp" class="text-5xl font-black text-gray-700">--</span>
+                    <span class="text-xl text-gray-400 font-bold">°C</span>
+                </div>
+                <div id="badgeTemp" class="mt-4 text-[10px] font-bold px-2 py-1 bg-gray-100 rounded inline-block">AGUARDANDO...</div>
+            </div>
+
+            <!-- Umidade -->
+            <div class="bg-white p-6 rounded-2xl shadow-md stat-card border-b-4 border-blue-500">
+                <p class="text-gray-400 text-xs font-bold uppercase mb-2">Umidade do Solo</p>
+                <div class="flex items-baseline gap-1">
+                    <span id="txtHum" class="text-5xl font-black text-gray-700">--</span>
+                    <span class="text-xl text-gray-400 font-bold">%</span>
+                </div>
+                <div id="badgeHum" class="mt-4 text-[10px] font-bold px-2 py-1 bg-gray-100 rounded inline-block">AGUARDANDO...</div>
+            </div>
+
+            <!-- Status da Bomba -->
+            <div class="bg-white p-6 rounded-2xl shadow-md stat-card border-b-4 border-slate-700">
+                <p class="text-gray-400 text-xs font-bold uppercase mb-2">Atuador (Bomba)</p>
+                <div id="statusBomba" class="text-2xl font-bold text-gray-400">DESLIGADA</div>
+                <p class="text-[10px] text-gray-400 mt-4 italic">Controle Automático Ativo</p>
+            </div>
+        </div>
+
+        <!-- Área do Gráfico Científico -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div class="lg:col-span-2 bg-white p-8 rounded-3xl shadow-lg">
+                <div class="flex justify-between items-center mb-8">
+                    <h2 class="text-gray-700 font-bold text-xl flex items-center gap-2">
+                        📊 Evolução de Dados em Tempo Real
+                    </h2>
+                    <div class="text-xs text-gray-400 font-mono" id="lastUpdate">Última leitura: --:--:--</div>
+                </div>
+                <div class="h-[400px]">
+                    <canvas id="farmChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Painel de Logs -->
+            <div class="bg-gray-800 p-6 rounded-3xl shadow-lg text-white flex flex-col h-full">
+                <h3 class="text-green-400 font-bold text-sm uppercase mb-4 tracking-widest">Logs do Sistema</h3>
+                <div id="logs" class="flex-1 overflow-y-auto font-mono text-[10px] space-y-2 pr-2 custom-scrollbar">
+                    <div class="text-gray-500 italic">> Aguardando sinal do ESP32...</div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="assets/main.js"></script>
+</body>
 </html>

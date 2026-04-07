@@ -1,15 +1,5 @@
-/* CSS Básico para deixar o painel amigável */
-body { 
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-    text-align: center; 
-    padding: 50px; 
-    background-color: #e2e8f0;
-}
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
 
-body::before {
-    
-}
-
-.seletor {
-
-}
+body { font-family: 'Inter', sans-serif; }
+.stat-card { transition: transform 0.2s; }
+.stat-card:hover { transform: translateY(-5px); }
