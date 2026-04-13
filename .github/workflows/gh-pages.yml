@@ -28,16 +28,26 @@ jobs:
       - name: Clone all branches
         run: |
           mkdir -p src/branch
+          links=""
           for branch in $(git branch -r | grep -v '\->'); do
             if [[ "$branch" == "origin/"* ]] && [[ "${branch#origin/}" != "main" ]]; then
               echo "Cloning branch ${branch}!"
               true_branch="${branch#origin/}"
               git clone -b "$true_branch" --single-branch https://github.com/pedro-escola/painel-smart-farm.git "temp"
+
+              link="$(echo -e "\t\t\t<a href="branch/${true_branch}/index.html">${true_branch}</a>")"
+              if [[ "${links}" == "" ]]; then
+                links="${links}${link}"
+              else
+                links="$(echo -e "${links}\n${link}")"
+              fi
+
               mv temp/src src/branch/$true_branch
               rm -rf temp/
               echo "Cloned branch ${branch}!"
             fi
           done
+          perl -pi -e "s|placeholder|${links}|" index.html
       
       - name: Setup Pages
         uses: actions/configure-pages@v5
