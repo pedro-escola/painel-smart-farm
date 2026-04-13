@@ -47,7 +47,7 @@ jobs:
               echo "Cloned branch ${branch}!"
             fi
           done
-          perl -pi -e "s|placeholder|${links}|" index.html
+          perl -pi -e "s|placeholder|${links}|" src/index.html
       
       - name: Setup Pages
         uses: actions/configure-pages@v5
