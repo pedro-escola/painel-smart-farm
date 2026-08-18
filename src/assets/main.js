@@ -42,10 +42,9 @@ function onNewData(json) {
     let data;
 
     if (path === "/") {
-        const keys = Object.keys(jsonData);
-        const lastKey = keys[keys.length - 1];
-
-        data = jsonData[lastKey];
+        const values = Object.values(jsonData);
+        
+        data = values[values.length - 1];
         farmData = jsonData;
     } else {
         data = jsonData;
