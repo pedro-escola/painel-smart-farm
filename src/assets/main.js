@@ -58,6 +58,9 @@ function onNewData(json) {
     updateLogs();
 }
 
+/**
+ * Updates the logs with all of the data stored in the `farmData` Object.
+ */
 function updateLogs() {
     /*const keys = Object.keys(farmData);
     const logElement = document.getElementById("logs");
@@ -70,4 +73,7 @@ function updateLogs() {
         logElement.appendChild(element);
     }*/
     console.log("updated logs!")
+}
+
+function parseMotivo(motivo) {
 }
