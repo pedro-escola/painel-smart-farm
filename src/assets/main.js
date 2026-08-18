@@ -1,6 +1,9 @@
 
+let farmData = {}
 const API_LINK = "https://smart-farm-d6948-default-rtdb.firebaseio.com/leituras.json"
-let umidadeTexto = document.getElementById("umidadeTexto");
+
+/** @type {HTMLElement} */
+let umidadeTexto;
 
 document.addEventListener("DOMContentLoaded", () => {
     umidadeTexto = document.getElementById("umidadeTexto");
@@ -13,7 +16,6 @@ document.addEventListener("DOMContentLoaded", () => {
         onNewData(json);
     })
 
-    /*
     eventSource.addEventListener("patch", (event) => {
         const json = JSON.parse(event.data);
         const path = json["path"].substring(1)
@@ -23,8 +25,9 @@ document.addEventListener("DOMContentLoaded", () => {
         } else {
             farmData[path] = {...farmData[path], ...json["data"]}
         }
+
+        updateLogs();
     })
-    */
 })
 
 /**
@@ -34,18 +37,37 @@ document.addEventListener("DOMContentLoaded", () => {
 function onNewData(json) {
     if (!json) { return }
     
-    const path = json["path"];
-    const jsonData = json["data"]
+    const /** @type {String} */ path = json["path"];
+    const /** @type {Object} */ jsonData = json["data"];
     let data;
 
-    if ((!path) || (path === "/")) {
-        let keys = Object.keys(jsonData);
-        let lastKey = keys[keys.length - 1];
+    if (path === "/") {
+        const keys = Object.keys(jsonData);
+        const lastKey = keys[keys.length - 1];
 
         data = jsonData[lastKey];
+        farmData = jsonData;
     } else {
         data = jsonData;
+        farmData[path.substring(1)] = jsonData
     }
 
-    umidadeTexto.innerText = `umidade: ${data["umidade"]}%`
+    umidadeTexto.innerText = `umidade: ${data["umidade"]}%`;
+    console.log(data);
+
+    updateLogs();
+}
+
+function updateLogs() {
+    /*const keys = Object.keys(farmData);
+    const logElement = document.getElementById("logs");
+
+    logElement.innerText = "";
+    for (let key of keys) {
+        const element = document.createElement("li")
+
+        element.innerText = `umidade: ${farmData[key]["umidade"]}%`
+        logElement.appendChild(element);
+    }*/
+    console.log("updated logs!")
 }
