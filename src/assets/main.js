@@ -1,40 +1,51 @@
-// Função para LIGAR a bomba
-function ligarBomba() {
-    // 1. Aviso em Pop-up na tela
-    // alert("Atenção: Enviando comando para a bomba d'água...");
 
-    // 2. JS procura no HTML o elemento com o ID 'status-bomba'
-    let textoStatus = document.getElementById("status-bomba");
+const API_LINK = "https://smart-farm-d6948-default-rtdb.firebaseio.com/leituras.json"
+let umidadeTexto = document.getElementById("umidadeTexto");
 
-    // 3. Muda o texto e a cor para Azul
-    textoStatus.innerText = "LIGADA (Irrigando...)";
-    textoStatus.style.color = "#3b82f6"; // Azul
+document.addEventListener("DOMContentLoaded", () => {
+    umidadeTexto = document.getElementById("umidadeTexto");
 
-    // 4. Aviso escondido no console para os desenvolvedores
-    console.log("Comando ON: A bomba de água foi ativada.");
-}
+    const eventSource = new EventSource(API_LINK);
 
-// Função para DESLIGAR a bomba (O Desafio dos alunos)
-function desligarBomba() {
-    // 1. Procura o mesmo elemento HTML
-    let textoStatus = document.getElementById("status-bomba");
+    eventSource.addEventListener("put", (event) => {
+        const json = JSON.parse(event.data);
 
-    // 2. Devolve o texto e a cor original (Vermelho)
-    textoStatus.innerText = "DESLIGADA";
-    textoStatus.style.color = "#ef4444"; // Vermelho
+        onNewData(json);
+    })
 
-    // 3. Aviso no console
-    console.log("Comando OFF: A bomba de água foi desligada.");
-}
+    /*
+    eventSource.addEventListener("patch", (event) => {
+        const json = JSON.parse(event.data);
+        const path = json["path"].substring(1)
 
-function atualizaSensores() {
-    let umidadeLida = Math.floor(Math.random() * 70) + 10;
+        if (!path) {
+            farmData = {...farmData, ...json["data"]}
+        } else {
+            farmData[path] = {...farmData[path], ...json["data"]}
+        }
+    })
+    */
+})
 
-    document.getElementById("valor-umidade").innerText = umidadeLida + "%";
+/**
+ * Triggered when a new "put" event is received, signifying we have new data to receive
+ * @param {Object} json
+ */
+function onNewData(json) {
+    if (!json) { return }
+    
+    const path = json["path"];
+    const jsonData = json["data"]
+    let data;
 
-    if (umidadeLida < 30) {
-        ligarBomba();
+    if ((!path) || (path === "/")) {
+        let keys = Object.keys(jsonData);
+        let lastKey = keys[keys.length - 1];
+
+        data = jsonData[lastKey];
     } else {
-        desligarBomba();
+        data = jsonData;
     }
+
+    umidadeTexto.innerText = `umidade: ${data["umidade"]}%`
 }
