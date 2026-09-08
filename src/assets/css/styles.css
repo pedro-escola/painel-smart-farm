@@ -1,0 +1,61 @@
+
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+}
+
+main {
+    height: 100%;
+    width: 70%;
+    padding: 1em 0;
+    margin: auto;
+
+    display: flex;
+    flex-direction: column;
+}
+
+main, main * {
+    gap: .5em;
+}
+
+.window {
+    display: inline-block;
+
+    border: .3rem solid black;
+    border-radius: 1rem;
+
+    padding-inline: .5rem;
+}
+
+#logs {
+    border: .3rem solid black;
+    border-radius: 1rem;
+
+    padding: .5em;
+    margin-bottom: .5em;
+
+    overflow: hidden;
+    height: 25em;
+}
+
+#grafico {
+    display: relative;
+    flex: 1;
+}
+
+#lado-a-lado {
+    display: flex;
+}
+
+#lado-a-lado > * {
+    flex: 1;
+}
+
+#bob {
+    display: inline-flex;
+    flex-direction: column;
+}
