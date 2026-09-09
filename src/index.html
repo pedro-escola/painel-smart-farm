@@ -17,25 +17,38 @@
 
 		<main>
 			<header class="window">
-				<p id="umidadeTexto">umidade: --</p>
-				<p id="estadoBomba">bomba: --</p>
+				<div>
+					<p>temperatura</p>
+					<p id="temperaturaTexto">--°C</p>
+				</div>
+				<div>
+					<p>umidade</p>
+					<p id="umidadeTexto">--%</p>
+				</div>
+				<div>
+					<p>bomba</p>
+					<p id="estadoBomba">--</p>
+				</div>
 			</header>
 
 			<div id="lado-a-lado">
 				<div id="bob">
 					<div class="window" id="alertaRecente">
-						<p id="alertaAtual">askdjalksdjalksd</p>
+						<h2>Último Alerta</h2>
+						<p id="alertaAtual">--</p>
 					</div>
 
 					<div class="window" id="grafico">
-						<canvas id="graficoCanvas"></canvas>
+						<h2>Leituras Recentes</h2>
+						<div style="display: relative; flex: 1;"><canvas id="graficoCanvas"></canvas></div>
 					</div>
 				</div>
 
 				<div class="window" id="janelaLogs">
-					<h2>logs!!!</h2>
+					<h2>Histórico</h2>
 					
 					<div id="logs"></div>
+					<p>ver mais</p>
 				</div>
 			</div>
 		</main>

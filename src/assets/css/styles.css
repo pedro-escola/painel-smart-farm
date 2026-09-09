@@ -31,6 +31,10 @@ main, main * {
     padding-inline: .5rem;
 }
 
+.window h2 {
+    padding-inline: .5em;
+}
+
 #logs {
     border: .3rem solid black;
     border-radius: 1rem;
@@ -43,8 +47,10 @@ main, main * {
 }
 
 #grafico {
-    display: relative;
+    display: flex;
+    flex-direction: column;
     flex: 1;
+    padding-bottom: .5rem;
 }
 
 #lado-a-lado {

@@ -4,11 +4,7 @@ var firstIndex = null;
 var graph = null;
 const API_LINK = "https://smart-farm-d6948-default-rtdb.firebaseio.com/leituras.json"
 
-/** @type {HTMLElement} */
-var umidadeTexto;
-
 document.addEventListener("DOMContentLoaded", () => {
-    umidadeTexto = document.getElementById("umidadeTexto");
 
     const eventSource = new EventSource(API_LINK);
 
@@ -22,16 +18,27 @@ document.addEventListener("DOMContentLoaded", () => {
         const json = JSON.parse(event.data);
         const path = json["path"].substring(1)
 
+        let tempData;
         if (!path) {
-            farmData = {...farmData, ...json["data"]}
+            tempData = {...farmData, ...json["data"]};
         } else {
-            farmData[path] = {...farmData[path], ...json["data"]}
+            tempData = structuredClone(farmData);
+            tempData[path] = {...farmData[path], ...json["data"]};
         }
 
-        updateLogs();
-        updateGraph();
+        farmData = validateData(tempData);
+
+        updateEverything();
     })
 })
+
+function validateData(data) {
+    return Object.fromEntries(
+        Object.entries(data).filter(([key, value]) => {
+            return value?.["sequencia"] != undefined
+        })
+    )
+}
 
 /**
  * Triggered when a new "put" event is received, signifying we have new data to receive
@@ -42,24 +49,29 @@ function onNewData(json) {
     
     const /** @type {String} */ path = json["path"];
     const /** @type {Object} */ jsonData = json["data"];
-    let data;
 
+    let tempData;
     if (path === "/") {
-        const values = Object.values(jsonData);
-
-        data = values[values.length - 1];
-        farmData = jsonData;
+        tempData = jsonData;
     } else {
-        data = jsonData;
-        farmData[path.substring(1)] = jsonData
+        tempData = structuredClone(farmData);
+        tempData[path.substring(1)] = jsonData;
     }
 
+    farmData = validateData(tempData);
+
+    updateEverything();
+}
+
+function updateHeader() {
     const values = Object.values(farmData);
+    const data = values[values.length - 1];
 
     if (firstIndex == null) {
         firstIndex = values.length - 1
         let firstValue = data;
-        for (let i = (firstIndex - 1); i > 0; i--) {
+
+        for (let i = (firstIndex - 1); i >= 0; i--) {
             const compareValue = values[i];
 
             if (compareValue["sequencia"] < firstValue["sequencia"]) {
@@ -71,11 +83,11 @@ function onNewData(json) {
         }
     }
 
-    umidadeTexto.innerText = `umidade: ${data["umidade"]}%`;
-    console.log(data);
+    const umidadeTexto = document.getElementById("umidadeTexto");
+    umidadeTexto.innerText = data["umidade"] + "%";
 
-    updateLogs();
-    updateGraph();
+    const bombaTexto = document.getElementById("estadoBomba");
+    bombaTexto.innerText = (data["estado_bomba"] ? "Ligada" : "Desligada")
 }
 
 /**
@@ -85,12 +97,18 @@ function updateLogs() {
     const values = Object.values(farmData);
     const logElement = document.getElementById("logs");
 
-    logElement.innerText = "";
-    for (let i = firstIndex; i < (values.length - 1); i++) {
-        const element = document.createElement("li");
-        const value = values[i];
+    const computedStyle = getComputedStyle(logElement)
+    const emHeight = parseFloat(computedStyle.height) / parseFloat(computedStyle.fontSize)
 
-        element.innerText = `umidade ${value["sequencia"]}: ${value["umidade"]}%`
+    logElement.innerText = "";
+    const loopEnd = (values.length - 1)
+    for (let i = (loopEnd - emHeight); i <= loopEnd; i++) {
+        const element = document.createElement("li");
+        const data = values[i];
+
+        const umidadeString = `umidade: ${data["umidade"]}%`
+
+        element.innerText = `${data["sequencia"]} - ${umidadeString};`
         logElement.appendChild(element);
     }
 
@@ -111,25 +129,32 @@ function createGraph() {
                 label: 'Umidade',
                 data: [],
                 borderColor: 'blue',
-                backgroundColor: 'rgba(249, 115, 22, 0.1)',
+                backgroundColor: 'rgba(33, 22, 249, 0.1)',
                 tension: 0.4,
                 fill: true,
-                borderWidth: 3
+                borderWidth: 3,
+                yAxisID: "umidY"
             }, {
-                label: 'Mínimo Umidade (20%)',
+                label: 'Umidade Mínima',
                 data: [],
-                borderColor: '#ef4444',
+                borderColor: 'blue',
                 borderDash: [5, 5],
                 pointRadius: 0,
-                fill: false
+                fill: false,
+                yAxisID: "umidY"
             }]
         },
         options: {
             scales: {
                 x: { grid: { display: false } },
-                y: {
+                umidY: {
                     min: 0,
                     max: 100,
+                    title: {
+                        display: true,
+                        text: "Umidade (%)"
+                    },
+                    position: "left",
                     ticks: { callback: function(value) { return value + "%" } }
                 }
             },
@@ -157,11 +182,34 @@ function updateGraph() {
     }
 
     graph.data.labels = data[0];
-    for (let i = 0; i < 2; i++) {
+    for (let i = 0; i < (data.length - 1); i++) {
         graph.data.datasets[i].data = data[i+1];
     }
     graph.update("none");
 }
 
+function updateAlerta() {
+    const alerta = document.getElementById("alertaAtual")
+    const values = Object.values(farmData)
+    const value = values[values.length - 1]
+
+    alerta.innerText = `${value["sequencia"]} - ${parseMotivo(value["motivo"])}`
+}
+
+function updateEverything() {
+    updateHeader();
+    updateLogs();
+    updateGraph();
+    updateAlerta();
+}
+
 function parseMotivo(motivo) {
+    switch (motivo) {
+        case "umidade_adequada":
+            return "Umidade Adequada"
+            break;
+        default:
+            return motivo;
+            break;
+    }
 }
