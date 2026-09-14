@@ -1,7 +1,9 @@
 
-var farmData = {} // data padrão inutil uhul
+var farmData = {}
 
-
+// coisa de data padrão inutil uhul
+const UMIDADE_MINIMA = 20
+const UPDATE_SEGUNDOS = 1
 
 function Str_Random(length) { // obrigad https://www.geeksforgeeks.org/javascript/generate-random-characters-numbers-in-javascript/
     let result = '';
@@ -21,15 +23,30 @@ function randomRange(min, max) {
     return min + random * (max - min);
 }
 
+var currentNumber = randomRange(10, 80);
+function stepRandomNumber(min, max, step) {
+    let change = (Math.random() * 2 - 1) * step;
+
+    if ((currentNumber + change) < min || ((currentNumber + change) > max))
+        change *= -1;
+
+    currentNumber += change;
+    // console.log(currentNumber);
+    currentNumber = Math.max(min, Math.min(max, currentNumber));
+
+    // console.log(currentNumber);
+    return currentNumber;
+}
+
 function createNewFakeData() {
     const keys = Object.keys(farmData);
     const sequencia_atual = keys.length;
 
-    umidade = randomRange(10, 80).toFixed(1);
+    const umidade = parseFloat( stepRandomNumber(10, 80, 10).toFixed(1) );
     farmData[Str_Random(10)] = {
         sequencia: sequencia_atual,
         umidade: umidade,
-        bomba_ligada: (umidade <= 20)
+        bomba_acionada: (umidade <= 20)
     };
 }
 
@@ -74,7 +91,7 @@ document.addEventListener("DOMContentLoaded", () => {
         setInterval(() => {
             createNewFakeData()
             updateEverything();
-        }, 5000);
+        }, UPDATE_SEGUNDOS * 1000);
     })
 })
 
@@ -133,7 +150,7 @@ function updateHeader() {
     umidadeTexto.innerText = data["umidade"];
 
     const bombaTexto = document.getElementById("estadoBomba");
-    bombaTexto.innerText = (data["estado_bomba"] ? "Ligada" : "Desligada")
+    bombaTexto.innerText = (data["bomba_acionada"] ? "Ligada" : "Desligada")
 }
 
 /**
@@ -182,14 +199,6 @@ function createGraph() {
                 fill: true,
                 borderWidth: 3,
                 yAxisID: "umidY"
-            }, {
-                label: 'Umidade Mínima',
-                data: [],
-                borderColor: 'blue',
-                borderDash: [5, 5],
-                pointRadius: 0,
-                fill: false,
-                yAxisID: "umidY"
             }]
         },
         options: {
@@ -213,12 +222,25 @@ function createGraph() {
                     annotations: {
                         umidade: {
                             type: "line",
+                            label: {
+                                content: "Umidade Mínima",
+                                display: false
+                            },
                             borderColor: "blue",
                             borderDash: [5, 5],
                             pointRadius: 0,
                             fill: false,
-                            yScaleID: "umidY",
-                            label: "Umidade Mínima"
+                            scaleID: "umidY",
+                            value: 20,
+
+                            enter({element}, event) {
+                                element.label.options.display = true
+                                return true;
+                            },
+                            leave({element}, event) {
+                                element.label.options.display = false
+                                return true;
+                            }
                         }
                     }
                 }
@@ -234,14 +256,13 @@ function updateGraph() {
     const farmEnd = values.length - 1;
 
     const data = [
-        [], [], []
+        [], []
     ]
     for (let i = (farmEnd - 10); i < farmEnd; i++) {
         const value = values[i];
 
         data[0].push(value["sequencia"]);
         data[1].push(value["umidade"]);
-        // data[2].push(20);
     }
 
     graph.data.labels = data[0];
@@ -271,8 +292,11 @@ function parseMotivo(motivo) {
         case "umidade_adequada":
             return "Umidade Adequada"
             break;
+        case undefined:
+            return "Indefinido"
+            break;
         default:
-            return motivo;
+            return `Desconhecido - ${motivo}`;
             break;
     }
 }
