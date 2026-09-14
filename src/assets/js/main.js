@@ -2,8 +2,10 @@
 var farmData = {}
 
 // coisa de data padrão inutil uhul
+const UTILIZAR_DADOS_FALLBACK = true
 const UMIDADE_MINIMA = 20
 const UPDATE_SEGUNDOS = 1
+var online = true
 
 function Str_Random(length) { // obrigad https://www.geeksforgeeks.org/javascript/generate-random-characters-numbers-in-javascript/
     let result = '';
@@ -46,7 +48,7 @@ function createNewFakeData() {
     farmData[Str_Random(10)] = {
         sequencia: sequencia_atual,
         umidade: umidade,
-        bomba_acionada: (umidade <= 20)
+        bomba_acionada: (umidade <= UMIDADE_MINIMA)
     };
 }
 
@@ -82,7 +84,13 @@ document.addEventListener("DOMContentLoaded", () => {
     })
 
     eventSource.addEventListener("error", (error) => {
+        if (!UTILIZAR_DADOS_FALLBACK) {
+            console.error(error);
+            return;
+        }
+
         console.warn("Utilizando dados aleatórios.");
+        online = false;
         for (let i = 0; i < 50; i++) {
             createNewFakeData();
         }
@@ -150,7 +158,13 @@ function updateHeader() {
     umidadeTexto.innerText = data["umidade"];
 
     const bombaTexto = document.getElementById("estadoBomba");
-    bombaTexto.innerText = (data["bomba_acionada"] ? "Ligada" : "Desligada")
+    bombaTexto.innerText = (data["bomba_acionada"] ? "Ligada" : "Desligada");
+
+    const statusTexto = document.getElementById("statusConexao");
+    const statusImage = document.getElementById("conexaoImg");
+    statusTexto.innerText = (online ? "Você está online!" : "Você está offline.");
+    statusImage.src = (online ? "assets/img/wifi.png" : "assets/img/no-wifi.png");
+    statusImage.alt = (online ? "Ícone online" : "Ícone offline");
 }
 
 /**
@@ -268,7 +282,7 @@ function updateGraph() {
     const data = [
         [], []
     ]
-    for (let i = (farmEnd - 10); i < farmEnd; i++) {
+    for (let i = (farmEnd - 10); i <= farmEnd; i++) {
         const value = values[i];
 
         data[0].push(value["sequencia"]);

@@ -18,22 +18,39 @@
 
 		<main>
 			<header class="window lado-a-lado">
-				<div>
-					<p>temperatura</p>
-					<div class="headerThing">
-						<h3 id="temperaturaTexto">--</h3><p>°C</p>
+				<div class="disableParagraphMargin">
+					<h3 id="statusConexao">Você está offline.</h3>
+					<img id="conexaoImg" src="assets/img/no-wifi.png" width="64" alt="Ícone de Offline">
+				</div>
+				<div class="disableParagraphMargin lado-a-lado2">
+					<img src="assets/img/temperature.png" alt="Ícone de Temperatura" width="64">
+					
+					<div>
+						<h3>Temperatura</h3>
+						<div class="headerThing">
+							
+							<h4 id="temperaturaTexto">--</h4><p>°C</p>
+						</div>
 					</div>
 				</div>
-				<div>
-					<p>umidade</p>
-					<div class="headerThing">
-						<h3 id="umidadeTexto">--</h3><p>%</p>
+				<div class="disableParagraphMargin lado-a-lado2">
+					<img src="assets/img/humidity.png" alt="Ícone de Umidade" width="64">
+
+					<div>
+						<h3>Umidade</h3>
+						<div class="headerThing">
+							<h4 id="umidadeTexto">--</h4><p>%</p>
+						</div>
 					</div>
 				</div>
-				<div>
-					<p>bomba</p>
-					<div class="headerThing">
-						<h3 id="estadoBomba">--</h3>
+				<div class="disableParagraphMargin lado-a-lado2">
+					<img src="assets/img/pump.png" alt="Ícone da Bomba d'água" width="64">
+
+					<div>
+						<h3>Bomba</h3>
+						<div class="headerThing">
+							<h4 id="estadoBomba">--</h4>
+						</div>
 					</div>
 				</div>
 			</header>

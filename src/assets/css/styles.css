@@ -58,12 +58,32 @@ header {
     text-align: center;
 }
 
-.lado-a-lado {
+.lado-a-lado, .lado-a-lado2 {
     display: flex;
 }
 
 .lado-a-lado > * {
     flex: 1;
+}
+
+.lado-a-lado2 {
+    align-items: center;
+}
+
+.lado-a-lado2 > * {
+    height: fit-content;
+}
+
+.lado-a-lado2 img {
+    width: 64px;
+    height: 64px;
+}
+
+.lado-a-lado2 > div {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
 #bob {
@@ -73,6 +93,7 @@ header {
 
 .headerThing {
     display: inline-grid;
+    vertical-align: top;
     grid-template:
         "bigText tinyText"
     / min-content 0fr;
@@ -85,6 +106,11 @@ header {
     margin: 0;
 }
 
-.headerThing > h3 {
+.headerThing > h4 {
     font-size: 1.4rem;
+}
+
+.disableParagraphMargin h3 {
+    font-size: 1.5rem;
+    margin: 0;
 }
