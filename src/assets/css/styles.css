@@ -29,6 +29,7 @@ main, main * {
     border-radius: 1rem;
 
     padding-inline: .5rem;
+    padding-bottom: .5rem;
 }
 
 .window h2 {
@@ -53,15 +54,37 @@ main, main * {
     padding-bottom: .5rem;
 }
 
-#lado-a-lado {
+header {
+    text-align: center;
+}
+
+.lado-a-lado {
     display: flex;
 }
 
-#lado-a-lado > * {
+.lado-a-lado > * {
     flex: 1;
 }
 
 #bob {
     display: inline-flex;
     flex-direction: column;
+}
+
+.headerThing {
+    display: inline-grid;
+    grid-template:
+        "bigText tinyText"
+    / min-content 0fr;
+    gap: .3rem;
+    align-items: end;
+}
+
+.headerThing > * {
+    display: inline-block;
+    margin: 0;
+}
+
+.headerThing > h3 {
+    font-size: 1.4rem;
 }

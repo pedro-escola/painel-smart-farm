@@ -1,11 +1,44 @@
 
-var farmData = {}
+var farmData = {} // data padrão inutil uhul
+
+
+
+function Str_Random(length) { // obrigad https://www.geeksforgeeks.org/javascript/generate-random-characters-numbers-in-javascript/
+    let result = '';
+    const characters = 'abcdefghijklmnopqrstuvwxyz0123456789';
+    
+    // Loop to generate characters for the specified length
+    for (let i = 0; i < length; i++) {
+        const randomInd = Math.floor(Math.random() * characters.length);
+        result += characters.charAt(randomInd);
+    }
+    return result;
+}
+
+function randomRange(min, max) {
+    let random = Math.random();
+
+    return min + random * (max - min);
+}
+
+function createNewFakeData() {
+    const keys = Object.keys(farmData);
+    const sequencia_atual = keys.length;
+
+    umidade = randomRange(10, 80).toFixed(1);
+    farmData[Str_Random(10)] = {
+        sequencia: sequencia_atual,
+        umidade: umidade,
+        bomba_ligada: (umidade <= 20)
+    };
+}
+
 var firstIndex = null;
 var graph = null;
-const API_LINK = "https://smart-farm-d6948-default-rtdb.firebaseio.com/leituras.json"
+//const API_LINK = "https://smart-farm-d6948-default-rtdb.firebaseio.com/leituras.json"
+const API_LINK = "https://pudim.com.br"
 
 document.addEventListener("DOMContentLoaded", () => {
-
     const eventSource = new EventSource(API_LINK);
 
     eventSource.addEventListener("put", (event) => {
@@ -29,6 +62,19 @@ document.addEventListener("DOMContentLoaded", () => {
         farmData = validateData(tempData);
 
         updateEverything();
+    })
+
+    eventSource.addEventListener("error", (error) => {
+        console.warn("Utilizando dados aleatórios.");
+        for (let i = 0; i < 50; i++) {
+            createNewFakeData();
+        }
+        updateEverything();
+
+        setInterval(() => {
+            createNewFakeData()
+            updateEverything();
+        }, 5000);
     })
 })
 
@@ -84,7 +130,7 @@ function updateHeader() {
     }
 
     const umidadeTexto = document.getElementById("umidadeTexto");
-    umidadeTexto.innerText = data["umidade"] + "%";
+    umidadeTexto.innerText = data["umidade"];
 
     const bombaTexto = document.getElementById("estadoBomba");
     bombaTexto.innerText = (data["estado_bomba"] ? "Ligada" : "Desligada")
@@ -105,6 +151,8 @@ function updateLogs() {
     for (let i = (loopEnd - emHeight); i <= loopEnd; i++) {
         const element = document.createElement("li");
         const data = values[i];
+
+        if (data == undefined) break;
 
         const umidadeString = `umidade: ${data["umidade"]}%`
 
@@ -159,7 +207,22 @@ function createGraph() {
                 }
             },
             maintainAspectRatio: false,
-            plugins: { legend: { position: 'bottom' } }
+            plugins: {
+                legend: { position: 'bottom' },
+                annotation: {
+                    annotations: {
+                        umidade: {
+                            type: "line",
+                            borderColor: "blue",
+                            borderDash: [5, 5],
+                            pointRadius: 0,
+                            fill: false,
+                            yScaleID: "umidY",
+                            label: "Umidade Mínima"
+                        }
+                    }
+                }
+            }
         }
     });
 }
@@ -178,7 +241,7 @@ function updateGraph() {
 
         data[0].push(value["sequencia"]);
         data[1].push(value["umidade"]);
-        data[2].push(20);
+        // data[2].push(20);
     }
 
     graph.data.labels = data[0];
