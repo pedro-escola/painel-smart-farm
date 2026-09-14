@@ -181,6 +181,15 @@ function updateLogs() {
     console.log("updated logs!")
 }
 
+function toggleAnnotationLabel(chart, event, annotationName) {
+    const label = chart?.options?.plugins?.annotation?.annotations?.[annotationName]?.label
+
+    if (label === undefined) return;
+
+    label.display = !label.display;
+    chart.update("none");
+}
+
 function createGraph() {
     if (graph !== null) return;
 
@@ -227,18 +236,19 @@ function createGraph() {
                                 display: false
                             },
                             borderColor: "blue",
-                            borderDash: [5, 5],
+                            borderDash: [10, 5],
+                            borderWidth: 4,
                             pointRadius: 0,
                             fill: false,
                             scaleID: "umidY",
                             value: 20,
 
-                            enter({element}, event) {
-                                element.label.options.display = true
+                            enter({chart}, event) {
+                                toggleAnnotationLabel(chart, event, "umidade")
                                 return true;
                             },
-                            leave({element}, event) {
-                                element.label.options.display = false
+                            leave({chart}, event) {
+                                toggleAnnotationLabel(chart, event, "umidade")
                                 return true;
                             }
                         }
