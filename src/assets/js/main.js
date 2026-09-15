@@ -250,7 +250,7 @@ function createGraph() {
                                 content: "Umidade Mínima",
                                 display: false
                             },
-                            borderColor: "rgba(100, 149, 237, 0.5)",
+                            borderColor: "rgba(100, 149, 237, 0.8)",
                             borderDash: [10, 5],
                             borderWidth: 4,
                             pointRadius: 0,
@@ -273,7 +273,7 @@ function createGraph() {
                                 content: "Umidade Máxima",
                                 display: false
                             },
-                            borderColor: "rgba(100, 149, 237, 0.5)",
+                            borderColor: "rgba(100, 149, 237, 0.8)",
                             borderDash: [10, 5],
                             borderWidth: 4,
                             pointRadius: 0,
