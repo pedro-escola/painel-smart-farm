@@ -186,7 +186,7 @@ function updateLogs() {
         if (data == undefined) break;
 
         const umidadeString = `Umidade: ${data["umidade"]}%`
-        const bombaString = `Bomba: ${data["bomba_acionada] ? "Ligada" : "Desligada}`
+        const bombaString = `Bomba: ${data["bomba_acionada"] ? "Ligada" : "Desligada}`
 
         element.innerText = `${data["sequencia"]} - ${umidadeString}; ${bombaString}`
         logElement.appendChild(element);
