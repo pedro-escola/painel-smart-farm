@@ -217,7 +217,7 @@ function createGraph() {
             datasets: [{
                 label: 'Umidade',
                 data: [],
-                borderColor: 'blue',
+                borderColor: 'rgb(100, 149, 237)',
                 backgroundColor: 'rgba(33, 22, 249, 0.1)',
                 tension: 0.4,
                 fill: true,
@@ -250,7 +250,7 @@ function createGraph() {
                                 content: "Umidade Mínima",
                                 display: false
                             },
-                            borderColor: "blue",
+                            borderColor: "rgba(100, 149, 237, 0.5)",
                             borderDash: [10, 5],
                             borderWidth: 4,
                             pointRadius: 0,
@@ -273,7 +273,7 @@ function createGraph() {
                                 content: "Umidade Máxima",
                                 display: false
                             },
-                            borderColor: "blue",
+                            borderColor: "rgba(100, 149, 237, 0.5)",
                             borderDash: [10, 5],
                             borderWidth: 4,
                             pointRadius: 0,
