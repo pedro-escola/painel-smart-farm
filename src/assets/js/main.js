@@ -342,6 +342,9 @@ function parseMotivo(motivo) {
         case "umidade_adequada":
             return "Umidade Adequada"
             break;
+        case "monitoramento_normal":
+            return "Monitoramento Normal"
+            break;
         case undefined:
             return "Indefinido"
             break;
