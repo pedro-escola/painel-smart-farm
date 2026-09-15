@@ -1,5 +1,6 @@
 
 var farmData = {}
+Chart.defaults.font.family = "Comic Sans MS"
 
 // coisa de data padrão inutil uhul
 const UTILIZAR_DADOS_FALLBACK = true

@@ -1,4 +1,11 @@
 
+@font-face {
+    font-family: "Comic Sans MS";
+    src:
+        local("Comic Sans MS"), local("Comic Sans"),
+        url("../ttf/Comic Sans MS.ttf");
+}
+
 *, *::before, *::after {
     box-sizing: border-box;
 }
@@ -6,6 +13,7 @@
 html, body {
     width: 100%;
     height: 100%;
+    font-family: "Comic Sans MS", cursive;
 }
 
 main {
