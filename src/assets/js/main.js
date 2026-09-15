@@ -44,7 +44,7 @@ function createNewFakeData() {
     const keys = Object.keys(farmData);
     const sequencia_atual = keys.length;
 
-    const umidade = parseFloat( stepRandomNumber(10, 80, 10).toFixed(1) );
+    const umidade = parseFloat( stepRandomNumber(10, 30, 10).toFixed(1) );
     farmData[Str_Random(10)] = {
         sequencia: sequencia_atual,
         umidade: umidade,
@@ -244,7 +244,7 @@ function createGraph() {
                 legend: { position: 'bottom' },
                 annotation: {
                     annotations: {
-                        umidade: {
+                        umidadeMin: {
                             type: "line",
                             label: {
                                 content: "Umidade Mínima",
@@ -259,11 +259,34 @@ function createGraph() {
                             value: 20,
 
                             enter({chart}, event) {
-                                toggleAnnotationLabel(chart, event, "umidade")
+                                toggleAnnotationLabel(chart, event, "umidadeMin")
                                 return true;
                             },
                             leave({chart}, event) {
-                                toggleAnnotationLabel(chart, event, "umidade")
+                                toggleAnnotationLabel(chart, event, "umidadeMin")
+                                return true;
+                            }
+                        },
+                        umidadeMax: {
+                            type: "line",
+                            label: {
+                                content: "Umidade Máxima",
+                                display: false
+                            },
+                            borderColor: "blue",
+                            borderDash: [10, 5],
+                            borderWidth: 4,
+                            pointRadius: 0,
+                            fill: false,
+                            scaleID: "umidY",
+                            value: 30,
+
+                            enter({chart}, event) {
+                                toggleAnnotationLabel(chart, event, "umidadeMax")
+                                return true;
+                            },
+                            leave({chart}, event) {
+                                toggleAnnotationLabel(chart, event, "umidadeMax")
                                 return true;
                             }
                         }
