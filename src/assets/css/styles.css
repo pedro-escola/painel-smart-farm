@@ -122,3 +122,19 @@ header {
     font-size: 1.5rem;
     margin: 0;
 }
+
+.offlineText {
+    color: #DC143C;
+}
+
+.onlineText {
+    color: #3CB371;
+}
+
+.blueText {
+    color: #00BFFF;
+}
+
+.darkBlueText {
+    color: #191970;
+}

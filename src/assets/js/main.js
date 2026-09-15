@@ -161,12 +161,18 @@ function updateHeader() {
 
     const bombaTexto = document.getElementById("estadoBomba");
     bombaTexto.innerText = (data["bomba_acionada"] ? "Ligada" : "Desligada");
+    bombaTexto.classList.remove("offlineText"); bombaTexto.classList.remove("onlineText");
+    bombaTexto.classList.add(data["bomba_acionada"] ? "onlineText" : "offlineText");
 
     const statusTexto = document.getElementById("statusConexao");
     const statusImage = document.getElementById("conexaoImg");
     statusTexto.innerText = (online ? "Você está online!" : "Você está offline.");
     statusImage.src = (online ? "assets/img/wifi.png" : "assets/img/no-wifi.png");
     statusImage.alt = (online ? "Ícone online" : "Ícone offline");
+    if (online) {
+        statusTexto.classList.remove("offlineText");
+        statusTexto.classList.add("onlineText");
+    }
 }
 
 /**
@@ -219,12 +225,12 @@ function createGraph() {
             datasets: [{
                 label: 'Umidade',
                 data: [],
-                borderColor: 'rgb(100, 149, 237)',
-                backgroundColor: 'rgba(33, 22, 249, 0.1)',
+                borderColor: 'rgb(0, 191, 255)',
+                backgroundColor: 'rgba(0, 191, 255, 0.1)',
                 tension: 0.4,
                 fill: true,
                 borderWidth: 3,
-                yAxisID: "umidY"
+                yAxisID: "umidY",
             }]
         },
         options: {
@@ -252,7 +258,7 @@ function createGraph() {
                                 content: "Umidade Mínima",
                                 display: false
                             },
-                            borderColor: "rgba(100, 149, 237, 0.8)",
+                            borderColor: "rgba(0, 191, 255, 0.4)",
                             borderDash: [10, 5],
                             borderWidth: 4,
                             pointRadius: 0,
@@ -275,7 +281,7 @@ function createGraph() {
                                 content: "Umidade Máxima",
                                 display: false
                             },
-                            borderColor: "rgba(100, 149, 237, 0.8)",
+                            borderColor: "rgba(0, 191, 255, 0.4)",
                             borderDash: [10, 5],
                             borderWidth: 4,
                             pointRadius: 0,
@@ -319,6 +325,7 @@ function updateGraph() {
     for (let i = 0; i < (data.length - 1); i++) {
         graph.data.datasets[i].data = data[i+1];
     }
+
     graph.update("none");
 }
 

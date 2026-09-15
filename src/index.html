@@ -4,7 +4,7 @@
 		<meta charset="UTF-8">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<title>cleber</title>
+		<title>Smart Farm</title>
 
 		<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 		<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation"></script>
@@ -17,16 +17,15 @@
 		<main>
 			<header class="window lado-a-lado">
 				<div class="disableParagraphMargin">
-					<h3 id="statusConexao">Você está offline.</h3>
+					<h3 id="statusConexao" class="offlineText">Você está offline.</h3>
 					<img id="conexaoImg" src="assets/img/no-wifi.png" width="64" alt="Ícone de Offline">
 				</div>
 				<div class="disableParagraphMargin lado-a-lado2">
 					<img src="assets/img/temperature.png" alt="Ícone de Temperatura" width="64">
 					
-					<div>
+					<div class="offlineText">
 						<h3>Temperatura</h3>
 						<div class="headerThing">
-							
 							<h4 id="temperaturaTexto">--</h4><p>°C</p>
 						</div>
 					</div>
@@ -34,7 +33,7 @@
 				<div class="disableParagraphMargin lado-a-lado2">
 					<img src="assets/img/humidity.png" alt="Ícone de Umidade" width="64">
 
-					<div>
+					<div class="blueText">
 						<h3>Umidade</h3>
 						<div class="headerThing">
 							<h4 id="umidadeTexto">--</h4><p>%</p>
@@ -45,7 +44,7 @@
 					<img src="assets/img/pump.png" alt="Ícone da Bomba d'água" width="64">
 
 					<div>
-						<h3>Bomba</h3>
+						<h3 class="blueText">Bomba</h3>
 						<div class="headerThing">
 							<h4 id="estadoBomba">--</h4>
 						</div>
