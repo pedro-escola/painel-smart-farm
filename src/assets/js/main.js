@@ -185,9 +185,10 @@ function updateLogs() {
 
         if (data == undefined) break;
 
-        const umidadeString = `umidade: ${data["umidade"]}%`
+        const umidadeString = `Umidade: ${data["umidade"]}%`
+        const bombaString = `Bomba: ${data["bomba_acionada] ? "Ligada" : "Desligada}`
 
-        element.innerText = `${data["sequencia"]} - ${umidadeString};`
+        element.innerText = `${data["sequencia"]} - ${umidadeString}; ${bombaString}`
         logElement.appendChild(element);
     }
 
