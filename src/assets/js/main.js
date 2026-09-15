@@ -3,8 +3,9 @@ var farmData = {}
 Chart.defaults.font.family = "Comic Sans MS"
 
 // coisa de data padrão inutil uhul
-const UTILIZAR_DADOS_FALLBACK = true
+const UTILIZAR_DADOS_FALLBACK = false
 const UMIDADE_MINIMA = 20
+const UMIDADE_MAXIMA = 30
 const UPDATE_SEGUNDOS = 1
 var online = true
 
@@ -55,8 +56,8 @@ function createNewFakeData() {
 
 var firstIndex = null;
 var graph = null;
-//const API_LINK = "https://smart-farm-d6948-default-rtdb.firebaseio.com/leituras.json"
-const API_LINK = "https://pudim.com.br"
+const API_LINK = "https://smart-farm-d6948-default-rtdb.firebaseio.com/leituras.json"
+//const API_LINK = "https://pudim.com.br"
 
 document.addEventListener("DOMContentLoaded", () => {
     const eventSource = new EventSource(API_LINK);
@@ -257,7 +258,7 @@ function createGraph() {
                             pointRadius: 0,
                             fill: false,
                             scaleID: "umidY",
-                            value: 20,
+                            value: UMIDADE_MINIMA,
 
                             enter({chart}, event) {
                                 toggleAnnotationLabel(chart, event, "umidadeMin")
@@ -280,7 +281,7 @@ function createGraph() {
                             pointRadius: 0,
                             fill: false,
                             scaleID: "umidY",
-                            value: 30,
+                            value: UMIDADE_MAXIMA,
 
                             enter({chart}, event) {
                                 toggleAnnotationLabel(chart, event, "umidadeMax")
