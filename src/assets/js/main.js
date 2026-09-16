@@ -1,12 +1,17 @@
 
 var farmData = {}
+var fakeData = {}
+
+var display = "farm"
 Chart.defaults.font.family = "Comic Sans MS"
 
-// coisa de data padrão inutil uhul
-const UTILIZAR_DADOS_FALLBACK = false
 const UMIDADE_MINIMA = 20
 const UMIDADE_MAXIMA = 30
-const UPDATE_SEGUNDOS = 1
+const TEMPERATURA_MINIMA = 13
+const TEMPERATURA_MAXIMA = 26
+
+// coisa de data padrão inutil uhul
+const UPDATE_SEGUNDOS = 2.5
 var online = true
 
 function Str_Random(length) { // obrigad https://www.geeksforgeeks.org/javascript/generate-random-characters-numbers-in-javascript/
@@ -27,39 +32,55 @@ function randomRange(min, max) {
     return min + random * (max - min);
 }
 
-var currentNumber = randomRange(10, 80);
-function stepRandomNumber(min, max, step) {
+function stepRandomNumber(current, min, max, step) {
     let change = (Math.random() * 2 - 1) * step;
 
-    if ((currentNumber + change) < min || ((currentNumber + change) > max))
+    if ((current + change) < min || ((current + change) > max))
         change *= -1;
 
-    currentNumber += change;
+    current += change;
     // console.log(currentNumber);
-    currentNumber = Math.max(min, Math.min(max, currentNumber));
+    current = Math.max(min, Math.min(max, current));
 
     // console.log(currentNumber);
-    return currentNumber;
+    return current;
 }
 
+var currentUmidade = randomRange(UMIDADE_MINIMA, UMIDADE_MAXIMA);
+var currentTemperatura = randomRange(TEMPERATURA_MINIMA, TEMPERATURA_MAXIMA);
 function createNewFakeData() {
-    const keys = Object.keys(farmData);
+    const keys = Object.keys(fakeData);
     const sequencia_atual = keys.length;
 
-    const umidade = parseFloat( stepRandomNumber(10, 30, 10).toFixed(1) );
-    farmData[Str_Random(10)] = {
+    const extraUmidade = 10;
+    currentUmidade = stepRandomNumber(currentUmidade, UMIDADE_MINIMA - extraUmidade, UMIDADE_MAXIMA + extraUmidade, extraUmidade)
+
+    const extraTemperatura = 2;
+    currentTemperatura = stepRandomNumber(currentTemperatura, TEMPERATURA_MINIMA - extraTemperatura, TEMPERATURA_MAXIMA + extraTemperatura, extraTemperatura)
+
+    const umidade = parseFloat( currentUmidade.toFixed(1) );
+    const temperatura = parseFloat( currentTemperatura.toFixed(1) );
+    fakeData[Str_Random(10)] = {
         sequencia: sequencia_atual,
         umidade: umidade,
-        bomba_acionada: (umidade <= UMIDADE_MINIMA)
+        temperatura: temperatura,
+        bomba_acionada: (umidade <= UMIDADE_MINIMA),
+        motivo: "dados_falsos"
     };
 }
 
 var firstIndex = null;
 var graph = null;
 const API_LINK = "https://smart-farm-d6948-default-rtdb.firebaseio.com/leituras.json"
-//const API_LINK = "https://pudim.com.br"
+// const API_LINK = "https://pudim.com.br"
 
 document.addEventListener("DOMContentLoaded", () => {
+    const dadosFalsosBox = document.getElementById("fakeDataBox");
+    dadosFalsosBox.checked = false;
+    dadosFalsosBox.addEventListener("change", () => {
+        changeTipo(dadosFalsosBox.checked);
+    });
+
     const eventSource = new EventSource(API_LINK);
 
     eventSource.addEventListener("put", (event) => {
@@ -86,23 +107,18 @@ document.addEventListener("DOMContentLoaded", () => {
     })
 
     eventSource.addEventListener("error", (error) => {
-        if (!UTILIZAR_DADOS_FALLBACK) {
-            console.error(error);
-            return;
-        }
-
+        dadosFalsosBox.checked = true;
         console.warn("Utilizando dados aleatórios.");
         online = false;
-        for (let i = 0; i < 50; i++) {
-            createNewFakeData();
-        }
-        updateEverything();
-
-        setInterval(() => {
-            createNewFakeData()
-            updateEverything();
-        }, UPDATE_SEGUNDOS * 1000);
     })
+
+    changeTipo(dadosFalsosBox.checked);
+    setInterval(() => {
+        createNewFakeData();
+        if (display == "fake") {
+            updateEverything();
+        }
+    }, UPDATE_SEGUNDOS * 1000);
 })
 
 function validateData(data) {
@@ -136,8 +152,17 @@ function onNewData(json) {
     updateEverything();
 }
 
+function getProperData() {
+    if (display == "farm") {
+        return farmData
+    }
+    else {
+        return fakeData
+    }
+}
+
 function updateHeader() {
-    const values = Object.values(farmData);
+    const values = Object.values(getProperData());
     const data = values[values.length - 1];
 
     if (firstIndex == null) {
@@ -156,13 +181,16 @@ function updateHeader() {
         }
     }
 
+    const temperaturaTexto = document.getElementById("temperaturaTexto");
+    temperaturaTexto.innerText = data?.["temperatura"] || "--";
+
     const umidadeTexto = document.getElementById("umidadeTexto");
-    umidadeTexto.innerText = data["umidade"];
+    umidadeTexto.innerText = data?.["umidade"] || "--";
 
     const bombaTexto = document.getElementById("estadoBomba");
-    bombaTexto.innerText = (data["bomba_acionada"] ? "Ligada" : "Desligada");
+    bombaTexto.innerText = (data?.["bomba_acionada"] ? "Ligada" : "Desligada");
     bombaTexto.classList.remove("offlineText"); bombaTexto.classList.remove("onlineText");
-    bombaTexto.classList.add(data["bomba_acionada"] ? "onlineText" : "offlineText");
+    bombaTexto.classList.add(data?.["bomba_acionada"] ? "onlineText" : "offlineText");
 
     const statusTexto = document.getElementById("statusConexao");
     const statusImage = document.getElementById("conexaoImg");
@@ -179,7 +207,7 @@ function updateHeader() {
  * Updates the logs with all of the data stored in the `farmData` Object.
  */
 function updateLogs() {
-    const values = Object.values(farmData);
+    const values = Object.values(getProperData());
     const logElement = document.getElementById("logs");
 
     const computedStyle = getComputedStyle(logElement)
@@ -193,10 +221,11 @@ function updateLogs() {
 
         if (data == undefined) break;
 
-        const umidadeString = `Umidade: ${data["umidade"]}%`
-        const bombaString = `Bomba: ${data["bomba_acionada"] ? "Ligada" : "Desligada"}`
+        const umidadeString = `Umidade: ${data?.["umidade"] || "--"}%`
+        const temperaturaString = `Temperatura: ${data?.["temperatura"] || "--"}°C`
+        const bombaString = `Bomba: ${data?.["bomba_acionada"] ? "Ligada" : "Desligada"}`
 
-        element.innerText = `${data["sequencia"]} - ${umidadeString}; ${bombaString}`
+        element.innerText = `${data?.["sequencia"] || "?"} - ${umidadeString}; ${temperaturaString}; ${bombaString}`
         logElement.appendChild(element);
     }
 
@@ -210,7 +239,7 @@ function toggleAnnotationLabel(chart, event, annotationName) {
     if (label === undefined) return;
 
     label.display = !label.display;
-    chart.update("none");
+    chart.update();
 }
 
 function createGraph() {
@@ -228,9 +257,18 @@ function createGraph() {
                 borderColor: 'rgb(0, 191, 255)',
                 backgroundColor: 'rgba(0, 191, 255, 0.1)',
                 tension: 0.4,
-                fill: true,
+                // fill: true,
                 borderWidth: 3,
                 yAxisID: "umidY",
+            }, {
+                label: "Temperatura",
+                data: [],
+                borderColor : "rgb(255, 160, 122)",
+                backgroundColor: "rgba(255, 160, 122, 0.1)",
+                tension: 0.4,
+                // fill: true,
+                borderWidth: 3,
+                yAxisID: "tempY"
             }]
         },
         options: {
@@ -245,6 +283,16 @@ function createGraph() {
                     },
                     position: "left",
                     ticks: { callback: function(value) { return value + "%" } }
+                },
+                tempY: {
+                    min: 10,
+                    max: 30,
+                    title: {
+                        display: true,
+                        text: "Temperatura (°C)"
+                    },
+                    position: "right",
+                    ticks: { callback: function(value) { return value + "°C" } }
                 }
             },
             maintainAspectRatio: false,
@@ -297,6 +345,53 @@ function createGraph() {
                                 toggleAnnotationLabel(chart, event, "umidadeMax")
                                 return true;
                             }
+                        },
+
+                        temperaturaMin: {
+                            type: "line",
+                            label: {
+                                content: "Temperatura Mínima",
+                                display: false
+                            },
+                            borderColor: "rgba(255, 160, 122, 0.4)",
+                            borderDash: [10, 5],
+                            borderWidth: 4,
+                            pointRadius: 0,
+                            fill: false,
+                            scaleID: "tempY",
+                            value: TEMPERATURA_MINIMA,
+
+                            enter({chart}, event) {
+                                toggleAnnotationLabel(chart, event, "temperaturaMin")
+                                return true;
+                            },
+                            leave({chart}, event) {
+                                toggleAnnotationLabel(chart, event, "temperaturaMin")
+                                return true;
+                            }
+                        },
+                        temperaturaMax: {
+                            type: "line",
+                            label: {
+                                content: "Temperatura Máxima",
+                                display: false
+                            },
+                            borderColor: "rgba(255, 160, 122, 0.4)",
+                            borderDash: [10, 5],
+                            borderWidth: 4,
+                            pointRadius: 0,
+                            fill: false,
+                            scaleID: "tempY",
+                            value: TEMPERATURA_MAXIMA,
+
+                            enter({chart}, event) {
+                                toggleAnnotationLabel(chart, event, "temperaturaMax")
+                                return true;
+                            },
+                            leave({chart}, event) {
+                                toggleAnnotationLabel(chart, event, "temperaturaMax")
+                                return true;
+                            }
                         }
                     }
                 }
@@ -308,21 +403,26 @@ function createGraph() {
 function updateGraph() {
     if (graph === null) createGraph();
 
-    const values = Object.values(farmData);
+    const values = Object.values(getProperData());
     const farmEnd = values.length - 1;
 
     const data = [
-        [], []
+        [], [], []
     ]
     for (let i = (farmEnd - 10); i <= farmEnd; i++) {
         const value = values[i];
 
-        data[0].push(value["sequencia"]);
-        data[1].push(value["umidade"]);
+        data[0].push(value?.["sequencia"]);
+        data[1].push(value?.["umidade"]);
+        data[2].push(value?.["temperatura"]);
     }
 
     graph.data.labels = data[0];
     for (let i = 0; i < (data.length - 1); i++) {
+        data[i+1].filter((value) => {
+            return value !== undefined
+        })
+
         graph.data.datasets[i].data = data[i+1];
     }
 
@@ -331,10 +431,10 @@ function updateGraph() {
 
 function updateAlerta() {
     const alerta = document.getElementById("alertaAtual")
-    const values = Object.values(farmData)
+    const values = Object.values(getProperData())
     const value = values[values.length - 1]
 
-    alerta.innerText = `${value["sequencia"]} - ${parseMotivo(value["motivo"])}`
+    alerta.innerText = `${value?.["sequencia"] || "?"} - ${parseMotivo(value?.["motivo"])}`
 }
 
 function updateEverything() {
@@ -344,19 +444,42 @@ function updateEverything() {
     updateAlerta();
 }
 
+/**
+ * coco
+ * @param {String} motivo
+ * @returns {String}
+ */
 function parseMotivo(motivo) {
     switch (motivo) {
-        case "umidade_adequada":
-            return "Umidade Adequada"
-            break;
-        case "monitoramento_normal":
-            return "Monitoramento Normal"
-            break;
         case undefined:
             return "Indefinido"
             break;
         default:
-            return `Desconhecido - ${motivo}`;
+            const stringArray = motivo.split("_")
+            let finalMotivo = ""
+            for (let i = 0; i < stringArray.length; i++) {
+                const string = stringArray[i];
+
+                finalMotivo += string.charAt(0).toUpperCase() + string.slice(1) + " "
+            }
+
+            return finalMotivo;
             break;
     }
+}
+
+function changeTipo(value) {
+    let oldDisplay = display;
+
+    if (value)
+        display = "fake";
+    else
+        display = "farm";
+    
+    if (oldDisplay != display)
+        updateEverything();
+}
+
+for (let i = 0; i < 50; i++) {
+    createNewFakeData();
 }
