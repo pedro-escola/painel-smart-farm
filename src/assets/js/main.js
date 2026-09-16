@@ -112,6 +112,9 @@ document.addEventListener("DOMContentLoaded", () => {
         online = false;
     })
 
+    for (let i = 0; i < 50; i++) {
+        createNewFakeData();
+    }
     changeTipo(dadosFalsosBox.checked);
     setInterval(() => {
         createNewFakeData();
@@ -478,8 +481,4 @@ function changeTipo(value) {
     
     if (oldDisplay != display)
         updateEverything();
-}
-
-for (let i = 0; i < 50; i++) {
-    createNewFakeData();
 }
