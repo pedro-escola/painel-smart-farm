@@ -14,6 +14,7 @@ html, body {
     width: 100%;
     height: 100%;
     font-family: "Comic Sans MS", cursive;
+    background-color: #F0FFF0;
 }
 
 main {
@@ -33,7 +34,8 @@ main, main * {
 .window {
     display: inline-block;
 
-    border: .3rem solid black;
+    background-color: #e0ffef;
+    border: .3rem solid #2F4F4F;
     border-radius: 1rem;
 
     padding-inline: .5rem;
@@ -45,7 +47,7 @@ main, main * {
 }
 
 #logs {
-    border: .3rem solid black;
+    border: .3rem solid #2F4F4F;
     border-radius: 1rem;
 
     padding: .5em;
